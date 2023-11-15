@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="NavComponentAnalyzer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/NavComponentAnalyzer_jar</output-path>
+    <root id="archive" name="NavComponentAnalyzer.jar">
+      <element id="module-output" name="NavComponentAnalyzer" />
+    </root>
+  </artifact>
+</component>
