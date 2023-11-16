@@ -17,7 +17,8 @@ public class BodyParser {
     private final static String END = " END";
     private final static String VAR = "VAR";
     private final static String CODE = "  CODE";
-    private final static String procFinishChars = "( ;\r\n<>!=,";
+    private final static String procFinishChars = "() ;\r\n<>!=,.:";
+    private final static String procStartChars = "() ;<>!=,";
     private final static String TRIGGER_VALIDATE = "OnValidate=";
     private final static String ONVALIDATE = "OnValidate";
 
@@ -71,7 +72,11 @@ public class BodyParser {
         if (startPos >= 0) {
             String[] parts = line.split(";");
             if(parts.length >= 3 ){
-                return parts[2];
+                String field = parts[2].strip();
+                if(field.contains(" ")){
+                    field = String.format("\"%s\"",field);
+                }
+                return field;
             }
         }
         return null;
@@ -154,10 +159,7 @@ public class BodyParser {
         int lineNo = 0;
         for (Object object : lines.toArray()) {
             String line = (String)object;
-            int comment  = line.indexOf("//");
-            if (comment >= 0) {
-                line = line.substring(0, comment);
-            }
+            line = clearComment(line);
             String searchVarSpace = " " + variable.getKey() + ".";
             String searchVarBrace = "(" + variable.getKey() + ".";
             int posSpace = line.indexOf(searchVarSpace);
@@ -211,24 +213,36 @@ public class BodyParser {
         }
     }
 
-    public static List<Integer> getProcedureUsesInBody(String body, String procedureName) {
+    private static String clearComment(String line) {
+        int comment  = line.indexOf("//");
+        if (comment >= 0) {
+            line = line.substring(0, comment);
+        }
+        return line;
+    }
+
+    public static List<Integer> getNameUsesInBody(String body, String searchName) {
         int lineNo = 0;
         List<Integer> ret = new ArrayList<>();
         Object[] lines = body.lines().toArray();
-        for (Object line : lines) {
-            searchInLine(procedureName, (String) line, ret, lineNo++);
+        for (Object object : lines) {
+            String line = (String) object;
+            line = clearComment(line);
+            searchInLine(searchName, line, ret, lineNo++);
         }
         return ret;
     }
 
-    private static void searchInLine(String procedureName, String line, List<Integer> ret, int lineNo) {
-        String searchVarSpace = " " + procedureName;
-        String searchVarBrace = "(" + procedureName;
-        if (searchInLineText(procedureName, line, ret, lineNo, searchVarSpace)) return;
-        searchInLineText(procedureName, line, ret, lineNo, searchVarBrace);
+    private static void searchInLine(String searchName, String line, List<Integer> ret, int lineNo) {
+        for (char ch: procStartChars.toCharArray()) {
+            String searchStr = String.format("%c%s", ch, searchName);
+            if (searchInLineText(searchName, line, ret, lineNo, searchStr)) {
+                break;
+            }
+        }
     }
 
-    private static boolean searchInLineText(String procedureName, String line, List<Integer> ret, int lineNo, String text) {
+    private static boolean searchInLineText(String searchName, String line, List<Integer> ret, int lineNo, String text) {
         int posText = line.indexOf(text);
         if (posText >= 0) {
             String strEnd = line.substring(posText + text.length());
@@ -241,7 +255,7 @@ public class BodyParser {
                 ret.add(lineNo);
                 return true;
             } else {
-                searchInLine(procedureName, strEnd, ret, lineNo);
+                searchInLine(searchName, strEnd, ret, lineNo);
             }
         }
         return false;

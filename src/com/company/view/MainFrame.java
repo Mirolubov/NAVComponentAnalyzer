@@ -25,7 +25,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -267,11 +266,7 @@ public class MainFrame extends JFrame {
     }
 
     public void close() {
-        try {
-            ConfigFile.getInstance().closeAndSaveConfig();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ConfigFile.getInstance().closeAndSaveConfig();
         dispose();
         System.exit(0);
     }

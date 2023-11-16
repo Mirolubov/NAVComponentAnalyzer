@@ -30,7 +30,7 @@ public class SearchUsages implements SearchProcessor{
         List<SearchResult> searchResultList = new ArrayList<>();
         // Поиск в объекте
         NavObject selectedObject = navObjects.getSelectedObject();
-        List<Integer> lines = BodyParser.getProcedureUsesInBody(selectedObject.getBody(), searchStr);
+        List<Integer> lines = BodyParser.getNameUsesInBody(selectedObject.getBody(), searchStr);
         for(Integer line: lines) {
             SearchResult result = new SearchResult();
             result.setType(selectedObject.getNavType().toString());
