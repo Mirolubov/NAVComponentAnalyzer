@@ -109,7 +109,7 @@ public class MainFrame extends JFrame {
         setVisible(true); // отображаем окно
     }
 
-    public void updateTree(NavObjects navObjects){
+    public void updateTree(){
         DefaultMutableTreeNode root = addParentNode();
         Map<NavType, DefaultMutableTreeNode> parentNodes = new HashMap<>();
         for(NavType navType: NavType.values()){

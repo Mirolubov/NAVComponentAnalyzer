@@ -6,14 +6,13 @@ import java.awt.*;
 public class ProgressBar extends JFrame implements Runnable {
     private final JProgressBar progressBar;
 
-    public ProgressBar(int maxBorder, MainFrame mainFrame) {
+    public ProgressBar() {
         setTitle("Parsing...");
         setSize(300, 100);
-        setLocationRelativeTo(mainFrame);
 
-        progressBar = new JProgressBar(0, maxBorder);
+        progressBar = new JProgressBar();
+        progressBar.setIndeterminate(false);
         progressBar.setStringPainted(true);
-        setLocationRelativeTo(mainFrame);
         add(progressBar, BorderLayout.CENTER);
     }
 

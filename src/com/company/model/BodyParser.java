@@ -104,33 +104,26 @@ public class BodyParser {
         return parameters;
     }
 
-    public static void parseProcedures(NavObjects navObjects, ProgressBar progressBar) {
-        if (navObjects == null)
-            return;
-        Set<NavObject> navObjectsList = navObjects.getNavObjectsList();
-        int i = 0;
-        for (NavObject navObject : navObjectsList) {
-            Map<String, Var> varObjList = navObject.getVarList();
-            Map<String, Procedure> procedureList = navObject.getProcedures();
-            if (procedureList != null) {
-                for (Map.Entry<String, Procedure> procEntry : procedureList.entrySet()) {
-                    Procedure procedure = procEntry.getValue();
-                    parseProcedure(procedure, varObjList);
-                }
+    public static void parseProcedures(NavObject navObject) {
+        Map<String, Var> varObjList = navObject.getVarList();
+        Map<String, Procedure> procedureList = navObject.getProcedures();
+        if (procedureList != null) {
+            for (Map.Entry<String, Procedure> procEntry : procedureList.entrySet()) {
+                Procedure procedure = procEntry.getValue();
+                parseProcedure(procedure, varObjList);
             }
-            if(navObject.getNavType().equals(NavType.Table) && navObject instanceof Table) {
-                Map<String, Field> fieldList = ((Table) navObject).getFields();
-                for (Map.Entry<String, Field> fieldEntry : fieldList.entrySet()) {
-                    Field field = fieldEntry.getValue();
-                    List<Trigger> triggers = field.getTriggers();
-                    for(Trigger trigger: triggers){
-                        parseProcedure(trigger, varObjList);
-                    }
-                }
-            }
-            progressBar.getProgressBar().setValue(i++);
         }
-
+        if(navObject.getNavType().equals(NavType.Table) && navObject instanceof Table) {
+            Map<String, Field> fieldList = ((Table) navObject).getFields();
+            for (Map.Entry<String, Field> fieldEntry : fieldList.entrySet()) {
+                Field field = fieldEntry.getValue();
+                List<Trigger> triggers = field.getTriggers();
+                for(Trigger trigger: triggers){
+                    parseProcedure(trigger, varObjList);
+                }
+            }
+        }
+//        progressBar.getProgressBar().setValue(i++);
     }
 
     private static void parseProcedure(Procedure procedure, Map<String, Var> varObjList) {

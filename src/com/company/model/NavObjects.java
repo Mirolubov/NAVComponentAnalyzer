@@ -12,13 +12,14 @@ public class NavObjects {
     }
 
     
-    public void add(int id, String name, String strNavType, String body) {
+    public NavObject add(int id, String name, String strNavType, String body) {
         NavType navType = NavType.fromString(strNavType);
         if(navType == null)
-            return;
+            return null;
         NavObject newNavObject = createNavObject(id, name, navType);
         newNavObject.setBody(body);
         navObjectsList.add(newNavObject);
+        return newNavObject;
     }
 
     public Set<NavObject> getNavObjectsList() {
