@@ -21,6 +21,8 @@ public class BodyParser {
     private final static String procStartChars = "() ;<>!=,";
     private final static String TRIGGER_VALIDATE = "OnValidate=";
     private final static String ONVALIDATE = "OnValidate";
+    public final static String CAPTIONML_START = "CaptionML=";
+
 
     public static boolean newLine(String line) {
         return (line.isBlank());
@@ -36,6 +38,22 @@ public class BodyParser {
 
     public static boolean triggerStart(String line) {
         return (line.contains(TRIGGER_VALIDATE));
+    }
+
+    public static String captionMLStart(String line) {
+        int pos = line.indexOf(CAPTIONML_START);
+        if (pos == -1) {
+            return "";
+        }
+        if (line.charAt(pos + CAPTIONML_START.length()) == '[') {
+            return "]";
+        } else {
+            return ";";
+        }
+    }
+
+    public static boolean captionMLEnd(String line, String mlEndChar) {
+        return (line.contains(mlEndChar.toString()));
     }
 
     public static int blockBeginEnd(String line) {
@@ -274,6 +292,8 @@ public class BodyParser {
         boolean codeStart = false;
         boolean varBlock = false;
         boolean varLoaded = false;
+        boolean captionBlock = false;
+        String captionMLEndChar = "";
         Procedure proc = null;
         Field field = null;
         Trigger trigger = null;
@@ -338,7 +358,24 @@ public class BodyParser {
                         }
                         continue;
                     }
+                    if (!captionBlock) {
+                        captionMLEndChar = BodyParser.captionMLStart((String) line);
+                        captionBlock = !(captionMLEndChar.isBlank());
+                    }
+                    if(captionBlock){
+                        field.addCaptionLine((String) line);
+                        captionBlock = !BodyParser.captionMLEnd((String) line, captionMLEndChar);
+                        if(!captionBlock) {
+                            captionMLEndChar = "";
+                            field.parseCaption();
+                        }
+                    }
                     if (BodyParser.groupEnd((String) line)){
+                        if(captionBlock) {
+                            captionBlock = false;
+                            captionMLEndChar = "";
+                            field.parseCaption();
+                        }
                         fieldRange = false;
                     }
                 } else if (BodyParser.fieldsRange((String) line)) {

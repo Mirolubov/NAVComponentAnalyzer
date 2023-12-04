@@ -8,6 +8,7 @@ import com.company.controller.listener.menu.AboutListener;
 import com.company.controller.listener.menu.FileListener;
 import com.company.controller.listener.menu.SearchTextListener;
 import com.company.controller.listener.menu.ThemeListener;
+import com.company.controller.listener.menu.antipattern.CheckCaptionMLListener;
 import com.company.controller.listener.menu.antipattern.TransactionInValidateListener;
 import com.company.controller.listener.menu.antipattern.UIInTransactionListener;
 import com.company.model.NavObjects;
@@ -193,6 +194,11 @@ public class MainFrame extends JFrame {
         itm = new JMenuItem("UI in transaction");
         UIInTransactionListener uiInTransactionListener = new UIInTransactionListener(this);
         itm.addActionListener(uiInTransactionListener);
+        menuAnti.add(itm);
+
+        itm = new JMenuItem("Check caption ML");
+        CheckCaptionMLListener checkCaptionMLListener = new CheckCaptionMLListener(this);
+        itm.addActionListener(checkCaptionMLListener);
         menuAnti.add(itm);
 
         return menu;
