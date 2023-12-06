@@ -10,6 +10,7 @@ public class Procedure {
     private final StringBuilder bodyBuilder;
     private int bodyBlock;
     private int lineNo;
+    private int inLineNo;
     private boolean varBlock;
     private final Map<String, Var> varList;
 
@@ -18,6 +19,7 @@ public class Procedure {
         bodyBuilder = new StringBuilder();
         bodyBlock = 0;
         lineNo = 0;
+        inLineNo = 0;
         varBlock = false;
         varList = new HashMap<>();
     }
@@ -25,6 +27,7 @@ public class Procedure {
     public boolean appendBody(String line) {
         bodyBuilder.append(line);
         bodyBuilder.append("\r\n");
+        inLineNo ++;
         int comment = line.indexOf("//");
         if (comment >= 0) {
             line = line.substring(0, comment);
@@ -49,6 +52,7 @@ public class Procedure {
             }else{
                 if(line.contains("@")) {
                     Var variable = new Var(line);
+                    variable.setLineNo(lineNo + inLineNo - 1);
                     varList.put(variable.getName(), variable);
                 }
                 return true;

@@ -21,25 +21,42 @@ public class SearchCaptionMLMiss implements SearchProcessor{
         List<SearchResult> searchResultList = new ArrayList<>();
 
         for (NavObject n : navObjects.getNavObjectsList()) {
+            for(Map.Entry<String,Var> varEntry: n.getVarList().entrySet()) {
+                Var variable = varEntry.getValue();
+                if (variable.getType().equals(Var.CONST_TYPE)){
+                    checkCaptions(n, variable.getCaptions(), variable.getLineNo(), variable.getName().stripLeading(), searchResultList);
+                }
+            }
+            for(Map.Entry<String, Procedure> procedureEntry: n.getProcedures().entrySet()){
+                for(Map.Entry<String,Var> varEntry: procedureEntry.getValue().getVarList().entrySet()) {
+                    Var variable = varEntry.getValue();
+                    if (variable.getType().equals(Var.CONST_TYPE)){
+                        checkCaptions(n, variable.getCaptions(), variable.getLineNo(), variable.getName().stripLeading(), searchResultList);
+                    }
+                }
+            }
+
             if (n.getNavType() == NavType.Table && n instanceof Table) {
                 Map<String, Field> fields = ((Table) n).getFields();
                 for (Map.Entry<String, Field> fieldMap : fields.entrySet()) {
                     Field field = fieldMap.getValue();
-                    Map<String, String> captions = field.getCaptions();
-                    if (!captions.containsKey("RUS") || !captions.containsKey("ENU")) {
-                        SearchResult result = new SearchResult();
-                        result.setType(n.getNavType().toString());
-                        result.setName(n.getName());
-                        result.setNo(String.valueOf(n.getId()));
-                        result.setLine(String.valueOf(field.getLineNo()));
-                        result.setText(field.getCaption().stripLeading());
-                        searchResultList.add(result);
-                    }
-
+                    checkCaptions(n, field.getCaptions(), field.getLineNo(), field.getCaption().stripLeading(), searchResultList);
                 }
             }
         }
         return SearchProcessor.getData(searchResultList);
+    }
+
+    private static void checkCaptions(NavObject n, Map<String, String> captions, int lineNo, String text, List<SearchResult> searchResultList) {
+        if (!captions.containsKey("RUS") || !captions.containsKey("ENU")) {
+            SearchResult result = new SearchResult();
+            result.setType(n.getNavType().toString());
+            result.setName(n.getName());
+            result.setNo(String.valueOf(n.getId()));
+            result.setLine(String.valueOf(lineNo));
+            result.setText(text);
+            searchResultList.add(result);
+        }
     }
 
     @Override

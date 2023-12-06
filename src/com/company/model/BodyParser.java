@@ -317,6 +317,7 @@ public class BodyParser {
                 if (varBlock) {
                     if(((String) line).contains("@")) {
                         Var variable = new Var((String) line);
+                        variable.setLineNo(lineNo);
                         varList.put(variable.getName(), variable);
                         varIndexes.put(variable.getName(), lineNo);
                         continue;

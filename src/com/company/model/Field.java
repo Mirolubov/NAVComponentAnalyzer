@@ -1,8 +1,12 @@
 package com.company.model;
 
+import com.company.config.AppProperties;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Field {
     private final String name;
@@ -42,33 +46,17 @@ public class Field {
     public void parseCaption() {
         if (caption.isBlank())
             return;
+        AppProperties prop = AppProperties.initAppProperties();
+        String regex = String.format("(%s)=([^;\\]\\}]+)", prop.getCaptionML());
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(caption);
 
-        int end = -1;
-        int start = caption.indexOf(BodyParser.CAPTIONML_START + "[");
-        if (start == -1) {
-            start = caption.indexOf(BodyParser.CAPTIONML_START);
-            if (start != -1) {
-                start += BodyParser.CAPTIONML_START.length();
-                end = caption.indexOf(';', start);
-            }
-        }else {
-            start += BodyParser.CAPTIONML_START.length() + 1;
-            end = caption.indexOf(']', start);
-        }
-        if (start == -1) {
-            return;
-        }
-        if (end == -1) {
-            end = caption.length();
-        }
+        while (matcher.find()) {
+            String keyValue = matcher.group(1);
+            String valValue = matcher.group(2);
 
-        caption = caption.substring(start, end);
-
-        String[] parts = caption.split(";");
-        for (String part : parts) {
-            String[] values = part.strip().split("=");
-            if(values.length == 2) {
-                captions.put(values[0].strip(), values[1].strip());
+            if (keyValue != null && valValue != null) {
+                captions.put(keyValue, valValue);
             }
         }
     }

@@ -1,31 +1,26 @@
 package com.company.view;
+import com.company.config.AppProperties;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
 
 public class AboutDialog extends JDialog {
 
     public AboutDialog(JFrame parent) {
         super(parent, "About", true);
 
-        Properties prop = new Properties();
-        try (InputStream in = AboutDialog.class.getClassLoader().getResourceAsStream("application.yml")) {
-            prop.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String title = prop.getProperty("title");
-        String version = prop.getProperty("version");
-        String author = prop.getProperty("author");
-        String githubLink = prop.getProperty("githubLink");
-        String email = prop.getProperty("e-mail");
-        String description= prop.getProperty("description");
+        AppProperties prop = AppProperties.initAppProperties();
+        String title = prop.getTitle();
+        String version = prop.getVersion();
+        String author = prop.getAuthor();
+        String githubLink = prop.getGitHubLink();
+        String email = prop.getEMail();
+        String description= prop.getDescription();
 
         setSize(400, 300);
         setLayout(new BorderLayout());

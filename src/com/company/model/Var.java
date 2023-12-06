@@ -1,5 +1,7 @@
 package com.company.model;
 
+import com.company.config.AppProperties;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +15,9 @@ public class Var {
     private Integer objectId;
     private Boolean temporary;
     private Boolean navObject;
+    private int lineNo;
     private final static String TEMPORARY = "TEMPORARY";
-    private final static String CONST_TYPE = "TextConst";
+    public final static String CONST_TYPE = "TextConst";
     private final Map<String, List<Integer>> executes;
     private final Map<String, String> captions;
 
@@ -23,6 +26,7 @@ public class Var {
         type = "";
         exceptionType = "";
         objectId = 0;
+        lineNo = 0;
         temporary = false;
         navObject = false;
         executes = new HashMap<>();
@@ -34,6 +38,7 @@ public class Var {
         type = "";
         exceptionType = "";
         objectId = 0;
+        lineNo = 0;
         temporary = false;
         navObject = false;
         executes = new HashMap<>();
@@ -65,7 +70,9 @@ public class Var {
         setType(varSepType[0]);
         if (varSepType[0].equals(CONST_TYPE)) {
 
-            Pattern pattern = Pattern.compile("(ENU|RUS)=([^;]+)");
+            AppProperties prop = AppProperties.initAppProperties();
+            String regex = String.format("(%s)=([^;]+)", prop.getCaptionML());
+            Pattern pattern = Pattern.compile(regex);
             String constString = line.substring(line.indexOf(CONST_TYPE) + CONST_TYPE.length() + 2, line.length() - 2).strip();
             Matcher matcher = pattern.matcher(constString);
 
@@ -78,15 +85,6 @@ public class Var {
                 }
             }
 
-
-
-//            String[] parts = line.substring(line.indexOf(CONST_TYPE) + CONST_TYPE.length()).split(";");
-//            for (String part : parts) {
-//                String[] values = part.strip().split("=");
-//                if(values.length == 2) {
-//                    captions.put(values[0].strip(), values[1].strip());
-//                }
-//            }
         }
         navObject = NavType.checkNavObject(getType());
         int varObjectId = 0;
@@ -135,5 +133,17 @@ public class Var {
 
     public Boolean isNavObject() {
         return navObject;
+    }
+
+    public Map<String, String> getCaptions() {
+        return captions;
+    }
+
+    public int getLineNo() {
+        return lineNo;
+    }
+
+    public void setLineNo(int lineNo) {
+        this.lineNo = lineNo;
     }
 }
