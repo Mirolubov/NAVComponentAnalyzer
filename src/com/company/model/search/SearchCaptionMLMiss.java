@@ -22,17 +22,11 @@ public class SearchCaptionMLMiss implements SearchProcessor{
 
         for (NavObject n : navObjects.getNavObjectsList()) {
             for(Map.Entry<String,Var> varEntry: n.getVarList().entrySet()) {
-                Var variable = varEntry.getValue();
-                if (variable.getType().equals(Var.CONST_TYPE)){
-                    checkCaptions(n, variable.getCaptions(), variable.getLineNo(), variable.getName().stripLeading(), searchResultList);
-                }
+                checkVarCaptions(n, varEntry, searchResultList);
             }
             for(Map.Entry<String, Procedure> procedureEntry: n.getProcedures().entrySet()){
                 for(Map.Entry<String,Var> varEntry: procedureEntry.getValue().getVarList().entrySet()) {
-                    Var variable = varEntry.getValue();
-                    if (variable.getType().equals(Var.CONST_TYPE)){
-                        checkCaptions(n, variable.getCaptions(), variable.getLineNo(), variable.getName().stripLeading(), searchResultList);
-                    }
+                    checkVarCaptions(n, varEntry, searchResultList);
                 }
             }
 
@@ -47,12 +41,19 @@ public class SearchCaptionMLMiss implements SearchProcessor{
         return SearchProcessor.getData(searchResultList);
     }
 
-    private static void checkCaptions(NavObject n, Map<String, String> captions, int lineNo, String text, List<SearchResult> searchResultList) {
+    private static void checkVarCaptions(NavObject navObject, Map.Entry<String, Var> varEntry, List<SearchResult> searchResultList) {
+        Var variable = varEntry.getValue();
+        if (variable.getType().equals(Var.CONST_TYPE)){
+            checkCaptions(navObject, variable.getCaptions(), variable.getLineNo(), variable.getName().stripLeading(), searchResultList);
+        }
+    }
+
+    private static void checkCaptions(NavObject navObject, Map<String, String> captions, int lineNo, String text, List<SearchResult> searchResultList) {
         if (!captions.containsKey("RUS") || !captions.containsKey("ENU")) {
             SearchResult result = new SearchResult();
-            result.setType(n.getNavType().toString());
-            result.setName(n.getName());
-            result.setNo(String.valueOf(n.getId()));
+            result.setType(navObject.getNavType().toString());
+            result.setName(navObject.getName());
+            result.setNo(String.valueOf(navObject.getId()));
             result.setLine(String.valueOf(lineNo));
             result.setText(text);
             searchResultList.add(result);
