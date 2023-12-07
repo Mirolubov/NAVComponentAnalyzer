@@ -21,6 +21,7 @@ Allows you to search for procedure calls and specified antipatterns, such as:
 ### Console arguments:
 * -f             folder to search files
 * -n             files to load
+* -cs            set charset Name
 * -captionml     enable console caption check
 * -validate      enable console transaction in validate check
 * -?             show help

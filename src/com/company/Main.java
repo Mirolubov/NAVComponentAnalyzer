@@ -3,6 +3,7 @@
 
 package com.company;
 
+import com.company.config.AppProperties;
 import com.company.config.ArgumentParser;
 import com.company.model.NavObjects;
 import com.company.model.process.FileLoader;
@@ -33,6 +34,9 @@ public class Main{
             files = argumentParser.extractNextFiles();
             consoleCaptionML = argumentParser.consoleSearchCaptionML();
             consoleValidateTran = argumentParser.consoleValidateTran();
+            String charsetName = argumentParser.extractCharsetName();
+            AppProperties appProperties = AppProperties.initAppProperties();
+            appProperties.setCharsetName(charsetName);
         }
         MainFrame mainFrame = null;
         NavObjects navObjects = new NavObjects();

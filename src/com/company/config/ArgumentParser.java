@@ -36,6 +36,14 @@ public class ArgumentParser {
         return "";
     }
 
+    public String extractCharsetName() {
+        int index = arguments.indexOf("-cs");
+        if (index != -1 && index < arguments.size() - 1) {
+            return arguments.get(index + 1);
+        }
+        return "";
+    }
+
     public List<String> extractNextFiles() {
         List<String> files = new ArrayList<>();
         int index = arguments.indexOf("-n");

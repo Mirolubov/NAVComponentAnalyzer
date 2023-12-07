@@ -5,11 +5,12 @@ Allows you to search for procedure calls and specified antipatterns, such as:
 2. Calling UI (MESSAGE, RUNMODAL) during a transaction
 3. Lack of translation into required languages
 Arguments:
- -f             folder
- -n             files
+ -f             folder to search files
+ -n             files to load
+ -cs            set charset Name
  -captionml     enable console caption check
  -validate      enable console transaction in validate check
- -?             help
+ -?             show help
 
 Example:
- java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml
+ java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml -c UTF-8

@@ -1,5 +1,6 @@
 package com.company.model.process;
 
+import com.company.config.AppProperties;
 import com.company.model.NavObject;
 import com.company.model.NavObjects;
 import com.company.model.NavType;
@@ -36,7 +37,10 @@ public class ProcessFile implements Runnable{
                 progressBarThread.start();
             }
             values = 0;
-            BufferedReader reader = new BufferedReader(new FileReader(file, Charset.forName("CP866")));
+            AppProperties appProperties = AppProperties.initAppProperties();
+            String charsetName = appProperties.getCharsetName();
+            System.out.println(charsetName);
+            BufferedReader reader = new BufferedReader(new FileReader(file, Charset.forName(charsetName)));
             String line;
             while ((line = reader.readLine()) != null) {
                 fillNavObjectList(line);
@@ -85,8 +89,12 @@ public class ProcessFile implements Runnable{
             if(progressBar != null) {
                 progressBar.getProgressBar().setValue(values);
             }
-            NavObject navObject = navObjects.add(id, name, strNavType, bodyBuilder.toString());
-            navQueue.put(navObject);
+            synchronized (navObjects) {
+                NavObject navObject = navObjects.add(id, name, strNavType, bodyBuilder.toString());
+                if(navObject != null) {
+                    navQueue.put(navObject);
+                }
+            }
             clear();
         }
     }
