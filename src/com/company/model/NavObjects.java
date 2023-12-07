@@ -22,6 +22,11 @@ public class NavObjects {
         return newNavObject;
     }
 
+    public void removaAll() {
+        navObjectsList.clear();
+    }
+
+
     public Set<NavObject> getNavObjectsList() {
         return navObjectsList;
     }

@@ -186,13 +186,6 @@ public class BodyParser {
                 if (procName.charAt(0) == '"'){
                     porocedureFinish = procName.indexOf('"', 1) + 1;
                 }else {
-                    /*Pattern pattern = Pattern.compile("\\((\\w+)\\)");
-                    Matcher matcher = pattern.matcher(input);
-                    StringBuilder result = new StringBuilder();
-                    int lastEnd = 0;
-                    while (matcher.find()) {
-                        String token = matcher.group(1);
-                      */
                     for (char ch : procName.toCharArray()) {
                         if (procFinishChars.contains(Character.toString(ch))) {
                             break;

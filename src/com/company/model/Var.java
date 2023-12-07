@@ -57,6 +57,7 @@ public class Var {
         } catch (StringIndexOutOfBoundsException e) {
             System.out.println("Exception in parseLine:");
             System.out.printf("line: %s\r\n", line);
+            return;
         }
 
         String varType = line.substring(line.indexOf(':') + 1)
@@ -73,7 +74,14 @@ public class Var {
             AppProperties prop = AppProperties.initAppProperties();
             String regex = String.format("(%s)=([^;]+)", prop.getCaptionML());
             Pattern pattern = Pattern.compile(regex);
-            String constString = line.substring(line.indexOf(CONST_TYPE) + CONST_TYPE.length() + 2, line.length() - 2).strip();
+            String constString;
+            try {
+                constString = line.substring(line.indexOf(CONST_TYPE) + CONST_TYPE.length() + 2, line.length() - 2).strip();
+            } catch(StringIndexOutOfBoundsException e) {
+                System.out.println("Try get const values exception - StringIndexOutOfBoundsException: " + e.getMessage());
+                System.out.printf("line: %s\r\n", line);
+                return;
+            }
             Matcher matcher = pattern.matcher(constString);
 
             while (matcher.find()) {

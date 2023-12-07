@@ -31,22 +31,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainFrame extends JFrame {
-    private NavObjects navObjects;
+    private final NavObjects navObjects;
     private JTextPane textArea;
     private DefaultListModel<String> listModel;
     private JTree tree;
     private JList<String> list;
 
-    public MainFrame() throws HeadlessException {
+    public MainFrame(NavObjects navObjects) throws HeadlessException {
+        this.navObjects = navObjects;
         prepareGUI();
     }
 
     public NavObjects getNavObjects() {
         return navObjects;
-    }
-
-    public void setNavObjects(NavObjects navObjects) {
-        this.navObjects = navObjects;
     }
 
     private void prepareGUI() {

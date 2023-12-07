@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
 import java.util.concurrent.BlockingQueue;
 
 public class ProcessFile implements Runnable{
-    private final NavObjects navObjects;
+    private NavObjects navObjects;
     private final StringBuilder bodyBuilder;
     private int id;
     private String name;
@@ -28,11 +28,13 @@ public class ProcessFile implements Runnable{
     @Override
     public void run() {
         try {
-            progressBar = new ProgressBar();
-            progressBar.setLocationRelativeTo(mainFrame);
-            progressBar.setVisible(true);
-            Thread progressBarThread = new Thread(progressBar);
-            progressBarThread.start();
+            if(mainFrame != null) {
+                progressBar = new ProgressBar();
+                progressBar.setLocationRelativeTo(mainFrame);
+                progressBar.setVisible(true);
+                Thread progressBarThread = new Thread(progressBar);
+                progressBarThread.start();
+            }
             values = 0;
             BufferedReader reader = new BufferedReader(new FileReader(file, Charset.forName("CP866")));
             String line;
@@ -43,22 +45,23 @@ public class ProcessFile implements Runnable{
             NavObject nullObject = new NavObject(0, "", NavType.Table);
             navQueue.put(nullObject);
 
-            mainFrame.setNavObjects(navObjects);
-            mainFrame.updateTree();
-            progressBar.setVisible(false);
-            progressBar.dispose();
+            if(mainFrame != null) {
+                mainFrame.updateTree();
+                progressBar.setVisible(false);
+                progressBar.dispose();
+            }
         }catch  (IOException | InterruptedException e){
             e.printStackTrace();
         }
     }
 
-    public ProcessFile(BlockingQueue<NavObject> navQueue, File file, MainFrame mainFrame) {
+    public ProcessFile(BlockingQueue<NavObject> navQueue, File file, MainFrame mainFrame, NavObjects navObjects) {
         bodyBuilder = new StringBuilder();
-        navObjects = new NavObjects();
         clear();
         this.navQueue = navQueue;
         this.file = file;
         this.mainFrame = mainFrame;
+        this.navObjects = navObjects;
     }
 
     private void fillNavObjectList(String line) throws InterruptedException {

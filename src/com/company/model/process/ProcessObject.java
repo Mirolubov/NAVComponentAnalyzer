@@ -19,8 +19,6 @@ public class ProcessObject implements Runnable{
         try {
             navObject = navQueue.take();
             while (navObject.getId() != 0) {
-                //System.out.println("Taked object: " + navObject.getName());
-                //System.out.println("Taking from queue size: " + navQueue.size());
                 BodyParser.parseProcedures(navObject);
                 navObject = navQueue.take();
             }

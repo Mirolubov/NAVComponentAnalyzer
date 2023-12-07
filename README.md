@@ -5,7 +5,8 @@ Can use it for exported text code files from Navision 09 - Navision 2018.
 This program is a C/AL code analyzer and browser.
 Allows you to search for procedure calls and specified antipatterns, such as:
 1. Opening a transaction in the Validate tag
-2. Calling UI (MESSAGE, RUNMODAL) during a transaction.
+2. Calling UI (MESSAGE, RUNMODAL) during a transaction
+3. Lack of translation into required languages
 
 ## RUS
 Данная программа представляет из себя анализатор и браузер кода C/AL.
