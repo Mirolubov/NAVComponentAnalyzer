@@ -20,6 +20,14 @@ public class ArgumentParser {
         return arguments.contains("-?");
     }
 
+    public boolean consoleSearchCaptionML() {
+        return arguments.contains("-captionml");
+    }
+
+    public boolean consoleValidateTran() {
+        return arguments.contains("-validate");
+    }
+
     public String extractNextFolder() {
         int index = arguments.indexOf("-f");
         if (index != -1 && index < arguments.size() - 1) {

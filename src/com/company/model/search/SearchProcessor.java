@@ -5,9 +5,7 @@ import com.company.view.MainFrame;
 import java.util.List;
 
 public interface SearchProcessor {
-
     Object[][] search(String searchStr);
-    MainFrame getMainFrame();
 
     static Object[][] getData(List<SearchResult> searchResultList) {
         Object[][] data = new Object[searchResultList.size()][5];

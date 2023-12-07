@@ -26,8 +26,8 @@ public class FindUsageListener implements ActionListener {
         if (selectedString == null){
             return;
         }
-        SearchProcessor searchProcessor = new SearchUsages(mainFrame);
-        SearchResultFrame newFrame = new SearchResultFrame(selectedString, searchProcessor);
+        SearchProcessor searchProcessor = new SearchUsages(mainFrame.getNavObjects());
+        SearchResultFrame newFrame = new SearchResultFrame(selectedString, searchProcessor, mainFrame);
         newFrame.setLocationRelativeTo(mainFrame);
         newFrame.setVisible(true);
     }

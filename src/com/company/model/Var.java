@@ -49,7 +49,7 @@ public class Var {
 
     protected void parseLine(String line){
         int comment = line.indexOf("//");
-        if (comment >= 0) {
+        if (comment >= 0 && line.indexOf("://") == -1) {
             line = line.substring(0, comment);
         }
         try {
@@ -78,8 +78,8 @@ public class Var {
             try {
                 constString = line.substring(line.indexOf(CONST_TYPE) + CONST_TYPE.length() + 2, line.length() - 2).strip();
             } catch(StringIndexOutOfBoundsException e) {
-                System.out.println("Try get const values exception - StringIndexOutOfBoundsException: " + e.getMessage());
-                System.out.printf("line: %s\r\n", line);
+                //System.out.println("Try get const values exception - StringIndexOutOfBoundsException: " + e.getMessage());
+                //System.out.printf("line: %s\r\n", line);
                 return;
             }
             Matcher matcher = pattern.matcher(constString);

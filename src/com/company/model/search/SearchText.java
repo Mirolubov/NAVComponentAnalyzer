@@ -9,16 +9,9 @@ import java.util.List;
 
 public class SearchText implements SearchProcessor{
     private final NavObjects navObjects;
-    private final MainFrame mainFrame;
 
-    public SearchText(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-        this.navObjects = mainFrame.getNavObjects();
-    }
-
-    @Override
-    public MainFrame getMainFrame() {
-        return mainFrame;
+    public SearchText(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 
     @Override

@@ -17,8 +17,8 @@ public class CheckCaptionMLListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        SearchProcessor searchProcessor = new SearchCaptionMLMiss(mainFrame);
-        SearchResultFrame newFrame = new SearchResultFrame("", searchProcessor);
+        SearchProcessor searchProcessor = new SearchCaptionMLMiss(mainFrame.getNavObjects());
+        SearchResultFrame newFrame = new SearchResultFrame("", searchProcessor, mainFrame);
         newFrame.setLocationRelativeTo(mainFrame);
         newFrame.setVisible(true);
     }

@@ -82,7 +82,9 @@ public class ProcessFile implements Runnable{
         bodyBuilder.append("\r\n");
         if(line.equals("}")){
             values ++;
-            progressBar.getProgressBar().setValue(values);
+            if(progressBar != null) {
+                progressBar.getProgressBar().setValue(values);
+            }
             NavObject navObject = navObjects.add(id, name, strNavType, bodyBuilder.toString());
             navQueue.put(navObject);
             clear();

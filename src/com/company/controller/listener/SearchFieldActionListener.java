@@ -19,8 +19,8 @@ public class SearchFieldActionListener implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        SearchProcessor searchProcessor = new SearchText(mainFrame);
-        SearchResultFrame newFrame = new SearchResultFrame(searchField.getText(), searchProcessor);
+        SearchProcessor searchProcessor = new SearchText(mainFrame.getNavObjects());
+        SearchResultFrame newFrame = new SearchResultFrame(searchField.getText(), searchProcessor, mainFrame);
         newFrame.setLocationRelativeTo(mainFrame);
         newFrame.setVisible(true);
     }

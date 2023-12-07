@@ -9,16 +9,9 @@ import java.util.Map;
 
 public class SearchTransactionInValidate implements SearchProcessor{
     private final NavObjects navObjects;
-    private final MainFrame mainFrame;
 
-    public SearchTransactionInValidate(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-        this.navObjects = mainFrame.getNavObjects();
-    }
-
-    @Override
-    public MainFrame getMainFrame() {
-        return mainFrame;
+    public SearchTransactionInValidate(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 
     @Override

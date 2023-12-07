@@ -10,16 +10,9 @@ import java.util.Set;
 
 public class SearchUsages implements SearchProcessor{
     private final NavObjects navObjects;
-    private final MainFrame mainFrame;
 
-    public SearchUsages(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-        this.navObjects = mainFrame.getNavObjects();
-    }
-
-    @Override
-    public MainFrame getMainFrame() {
-        return mainFrame;
+    public SearchUsages(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 
     @Override

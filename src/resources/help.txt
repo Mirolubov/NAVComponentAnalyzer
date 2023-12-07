@@ -1,12 +1,15 @@
 This program is a C/AL code analyzer and browser.
+Can be used in console mode in CI/CD pipeline.
 Allows you to search for procedure calls and specified antipatterns, such as:
 1. Opening a transaction in the Validate tag
 2. Calling UI (MESSAGE, RUNMODAL) during a transaction
 3. Lack of translation into required languages
 Arguments:
- -f     folder
- -n     files
- -?     help
+ -f             folder
+ -n             files
+ -captionml     enable console caption check
+ -validate      enable console transaction in validate check
+ -?             help
 
 Example:
- java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt
+ java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml

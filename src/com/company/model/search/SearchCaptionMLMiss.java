@@ -9,11 +9,9 @@ import java.util.Map;
 
 public class SearchCaptionMLMiss implements SearchProcessor{
     private final NavObjects navObjects;
-    private final MainFrame mainFrame;
 
-    public SearchCaptionMLMiss(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-        this.navObjects = mainFrame.getNavObjects();
+    public SearchCaptionMLMiss(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 
     @Override
@@ -58,10 +56,5 @@ public class SearchCaptionMLMiss implements SearchProcessor{
             result.setText(text);
             searchResultList.add(result);
         }
-    }
-
-    @Override
-    public MainFrame getMainFrame() {
-        return mainFrame;
     }
 }

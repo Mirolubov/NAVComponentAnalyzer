@@ -17,8 +17,8 @@ public class TransactionInValidateListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        SearchProcessor searchProcessor = new SearchTransactionInValidate(mainFrame);
-        SearchResultFrame newFrame = new SearchResultFrame("", searchProcessor);
+        SearchProcessor searchProcessor = new SearchTransactionInValidate(mainFrame.getNavObjects());
+        SearchResultFrame newFrame = new SearchResultFrame("", searchProcessor, mainFrame);
         newFrame.setLocationRelativeTo(mainFrame);
         newFrame.setVisible(true);
     }

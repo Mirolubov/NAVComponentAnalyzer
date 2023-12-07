@@ -9,10 +9,12 @@ import java.awt.*;
 
 public class SearchResultFrame extends JFrame {
     private final String searchString;
+    private final MainFrame mainFrame;
 
-    public SearchResultFrame(String title, SearchProcessor searchProcessor) throws HeadlessException {
+    public SearchResultFrame(String title, SearchProcessor searchProcessor, MainFrame mainFrame) throws HeadlessException {
         super(title);
         this.searchString = title;
+        this.mainFrame = mainFrame;
         prepareUI(searchProcessor);
     }
 
@@ -32,13 +34,13 @@ public class SearchResultFrame extends JFrame {
 
     }
 
-    private static JTable getJTable(SearchProcessor searchProcessor, Object[][] data, String[] columnNames) {
+    private JTable getJTable(SearchProcessor searchProcessor, Object[][] data, String[] columnNames) {
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
         // Create the table
         JTable table = new JTable(tableModel);
         ListSelectionModel selectionModel = table.getSelectionModel();
         selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        SearchTableSelectionListener searchTableSelectionListener = new SearchTableSelectionListener(searchProcessor.getMainFrame(), table);
+        SearchTableSelectionListener searchTableSelectionListener = new SearchTableSelectionListener(mainFrame, table);
         selectionModel.addListSelectionListener(searchTableSelectionListener);
         table.setComponentPopupMenu(new TextAreaPopupMenu());
         return table;

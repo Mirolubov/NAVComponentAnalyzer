@@ -1,8 +1,10 @@
 package com.company.model.process;
 
 import com.company.config.ConfigFile;
+import com.company.model.BodyParser;
 import com.company.model.NavObject;
 import com.company.model.NavObjects;
+import com.company.model.NavType;
 import com.company.view.MainFrame;
 
 import javax.swing.*;
@@ -37,7 +39,7 @@ public class FileLoader {
     }
 
     public void processFile() {
-        System.out.println("loading file: " + command);
+        System.out.print("loading file: " + command + " ... -");
         BlockingQueue<NavObject> navQueue = new ArrayBlockingQueue<>(CAPACITY);
         ConfigFile configFile = ConfigFile.getInstance();
         ArrayList<String> recentFiles = configFile.getRecentFiles();
@@ -53,6 +55,36 @@ public class FileLoader {
                         Thread objThread = new Thread(processObject);
                         objThread.start();
                     }
+                    if(mainFrame == null) {
+                        try {
+                            int n = 0;
+                            while (navProccessInWork(navQueue)) {
+                                System.out.print("\b");
+                                switch (n) {
+                                    case 0:
+                                        System.out.print("\\");
+                                        break;
+                                    case 1:
+                                        System.out.print("|");
+                                        break;
+                                    case 2:
+                                        System.out.print("/");
+                                        break;
+                                    case 3:
+                                        System.out.print("-");
+                                        break;
+                                }
+                                n++;
+                                if (n == 4) {
+                                    n = 0;
+                                }
+                                Thread.sleep(300);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    System.out.println("\bDone.");
                 } else {
                     String fileNotExists = String.format("File %s not exists", path);
                     System.out.println(fileNotExists);
@@ -61,6 +93,18 @@ public class FileLoader {
                     }
                 }
             }
+        }
+    }
+
+    private boolean navProccessInWork(BlockingQueue<NavObject> navQueue) throws InterruptedException {
+        NavObject navObject = navQueue.take();
+        if (navObject.getId() == 0) {
+            navObject = new NavObject(0, "", NavType.Table);
+            navQueue.put(navObject);
+            return false;
+        } else {
+            navQueue.put(navObject);
+            return true;
         }
     }
 
