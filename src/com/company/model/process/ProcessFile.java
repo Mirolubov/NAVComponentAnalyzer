@@ -39,7 +39,6 @@ public class ProcessFile implements Runnable{
             values = 0;
             AppProperties appProperties = AppProperties.initAppProperties();
             String charsetName = appProperties.getCharsetName();
-            System.out.println(charsetName);
             BufferedReader reader = new BufferedReader(new FileReader(file, Charset.forName(charsetName)));
             String line;
             while ((line = reader.readLine()) != null) {

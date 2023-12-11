@@ -39,7 +39,7 @@ public class SearchResultFrame extends JFrame {
         // Create the table
         JTable table = new JTable(tableModel);
         ListSelectionModel selectionModel = table.getSelectionModel();
-        selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         SearchTableSelectionListener searchTableSelectionListener = new SearchTableSelectionListener(mainFrame, table);
         selectionModel.addListSelectionListener(searchTableSelectionListener);
         table.setComponentPopupMenu(new TextAreaPopupMenu());

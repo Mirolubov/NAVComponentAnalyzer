@@ -13,4 +13,4 @@ Arguments:
  -?             show help
 
 Example:
- java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml -c UTF-8
+// java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml -c UTF-8

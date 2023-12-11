@@ -53,6 +53,7 @@ public class SearchTransactionInValidate implements SearchProcessor{
 
             }
             searchResultList.add(result);
+            return;
         }
 
         for(Map.Entry<String, Var> varMap: varList.entrySet()) {
@@ -80,6 +81,7 @@ public class SearchTransactionInValidate implements SearchProcessor{
 
                         }
                         searchResultList.add(result);
+                        return;
                     }
                 }
             }
