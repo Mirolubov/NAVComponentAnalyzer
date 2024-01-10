@@ -24,6 +24,7 @@ Allows you to search for procedure calls and specified antipatterns, such as:
 * -cs            set charset Name
 * -captionml     enable console caption check
 * -validate      enable console transaction in validate check
+* -console       console mode
 * -?             show help
 
 ## RUS

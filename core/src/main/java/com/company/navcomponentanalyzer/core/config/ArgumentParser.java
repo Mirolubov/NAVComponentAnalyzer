@@ -5,11 +5,9 @@ import java.util.List;
 
 public class ArgumentParser {
     private final List<String> arguments;
-    private int currentIndex;
 
     public ArgumentParser(String[] args) {
         this.arguments = List.of(args);
-        this.currentIndex = 0;
     }
 
     public boolean hasArguments() {
@@ -20,12 +18,12 @@ public class ArgumentParser {
         return arguments.contains("-?");
     }
 
-    public boolean consoleSearchCaptionML() {
-        return arguments.contains("-captionml");
+    public boolean consoleMode() {
+        return arguments.contains("-console");
     }
 
-    public boolean consoleValidateTran() {
-        return arguments.contains("-validate");
+    public boolean containsArgument(String argument) {
+        return arguments.contains(argument);
     }
 
     public String extractNextFolder() {

@@ -8,12 +8,11 @@ import com.company.navcomponentanalyzer.core.listener.menu.AboutListener;
 import com.company.navcomponentanalyzer.core.listener.menu.FileListener;
 import com.company.navcomponentanalyzer.core.listener.menu.SearchTextListener;
 import com.company.navcomponentanalyzer.core.listener.menu.ThemeListener;
-import com.company.navcomponentanalyzer.core.listener.menu.antipattern.CheckCaptionMLListener;
-import com.company.navcomponentanalyzer.core.listener.menu.antipattern.TransactionInValidateListener;
-import com.company.navcomponentanalyzer.core.listener.menu.antipattern.UIInTransactionListener;
+import com.company.navcomponentanalyzer.core.listener.menu.antipattern.AntipatternListener;
 import com.company.navcomponentanalyzer.core.model.NavObjects;
 import com.company.navcomponentanalyzer.core.model.NavType;
 import com.company.navcomponentanalyzer.core.model.Theme;
+import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
 
 import javax.swing.*;
 import javax.swing.text.StyledDocument;
@@ -21,13 +20,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainFrame extends JFrame {
@@ -36,9 +33,11 @@ public class MainFrame extends JFrame {
     private DefaultListModel<String> listModel;
     private JTree tree;
     private JList<String> list;
+    private final List<SearchProcessor> searchProcessors;
 
-    public MainFrame(NavObjects navObjects) throws HeadlessException {
+    public MainFrame(NavObjects navObjects, List<SearchProcessor> searchProcessors) throws HeadlessException {
         this.navObjects = navObjects;
+        this.searchProcessors = searchProcessors;
         prepareGUI();
     }
 
@@ -183,20 +182,12 @@ public class MainFrame extends JFrame {
         JMenu menuAnti = new JMenu("Antipatterns");
         menu.add(menuAnti);
 
-        itm = new JMenuItem("Transactions in VALIDATE");
-        menuAnti.add(itm);
-        TransactionInValidateListener transactionInValidateListener = new TransactionInValidateListener(this);
-        itm.addActionListener(transactionInValidateListener);
-
-        itm = new JMenuItem("UI in transaction");
-        UIInTransactionListener uiInTransactionListener = new UIInTransactionListener(this);
-        itm.addActionListener(uiInTransactionListener);
-        menuAnti.add(itm);
-
-        itm = new JMenuItem("Check caption ML");
-        CheckCaptionMLListener checkCaptionMLListener = new CheckCaptionMLListener(this);
-        itm.addActionListener(checkCaptionMLListener);
-        menuAnti.add(itm);
+        for (SearchProcessor searchProcessor : searchProcessors) {
+            itm = new JMenuItem(searchProcessor.getCaption());
+            menuAnti.add(itm);
+            ActionListener listener = new AntipatternListener(this, searchProcessor);
+            itm.addActionListener(listener);
+        }
 
         return menu;
     }

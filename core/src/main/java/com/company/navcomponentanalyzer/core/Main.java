@@ -7,21 +7,25 @@ import com.company.navcomponentanalyzer.core.config.AppProperties;
 import com.company.navcomponentanalyzer.core.config.ArgumentParser;
 import com.company.navcomponentanalyzer.core.model.NavObjects;
 import com.company.navcomponentanalyzer.core.model.process.FileLoader;
-import com.company.navcomponentanalyzer.core.model.search.PrintResult;
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
-import com.company.navcomponentanalyzer.core.model.search.SearchTransactionInValidate;
-import com.company.navcomponentanalyzer.core.model.search.SearchCaptionMLMiss;
+import com.company.navcomponentanalyzer.core.model.search.PrintResult;
 import com.company.navcomponentanalyzer.core.view.MainFrame;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.module.Configuration;
+import java.lang.module.ModuleFinder;
+import java.lang.module.ModuleDescriptor;
+import java.lang.module.ModuleReference;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main{
 
     public static void main(String[] args) {
-        boolean consoleCaptionML = false;
-        boolean consoleValidateTran = false;
+        boolean consoleMode = false;
         boolean consoleError = false;
         List<String> files = null;
         String folder = "";
@@ -30,31 +34,59 @@ public class Main{
             if (argumentParser.showHelp()) {
                 displayHelpMessage();
             }
+            consoleMode = argumentParser.consoleMode();
             folder = argumentParser.extractNextFolder();
             files = argumentParser.extractNextFiles();
-            consoleCaptionML = argumentParser.consoleSearchCaptionML();
-            consoleValidateTran = argumentParser.consoleValidateTran();
             String charsetName = argumentParser.extractCharsetName();
             AppProperties appProperties = AppProperties.initAppProperties();
             appProperties.setCharsetName(charsetName);
         }
+
+        Path pluginsDir = Paths.get("plugins");
+        // Будем искать плагины в папке plugins
+        ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
+
+        // Пусть ModuleFinder найдёт все модули в папке plugins и вернёт нам список их имён
+        List<String> plugins = pluginsFinder
+                .findAll()
+                .stream()
+                .map(ModuleReference::descriptor)
+                .map(ModuleDescriptor::name)
+                .filter(s -> !s.equals(Main.class.getModule().getName()))
+                .collect(Collectors.toList());
+
+        // Создадим конфигурацию, которая выполнит резолюцию указанных модулей (проверит корректность графа зависимостей)
+        Configuration pluginsConfiguration = ModuleLayer
+                .boot()
+                .configuration()
+                .resolve(pluginsFinder, ModuleFinder.of(), plugins);
+
+        // Создадим слой модулей для плагинов
+        ModuleLayer layer = ModuleLayer
+                .boot()
+                .defineModulesWithOneLoader(pluginsConfiguration, ClassLoader.getSystemClassLoader());
+
+        // Найдём все реализации сервиса IService в слое плагинов и в слое Boot
+        List<SearchProcessor> searchProcessors = SearchProcessor.getSearchProcessors(layer);
+
         MainFrame mainFrame = null;
         NavObjects navObjects = new NavObjects();
-        if(!consoleCaptionML && !consoleValidateTran) {
-            mainFrame = new MainFrame(navObjects);
+        for (SearchProcessor searchProcessor : searchProcessors) {
+            searchProcessor.setNavObjects(navObjects);
+        }
+
+        if(!consoleMode) {
+            mainFrame = new MainFrame(navObjects, searchProcessors);
         }
         if (files != null) {
             for (String file : files) {
                 FileLoader fileLoader = new FileLoader(String.format("%s/%s", folder, file), mainFrame, navObjects);
                 fileLoader.processFile();
             }
-            if(consoleCaptionML) {
-                SearchProcessor searchProcessor = new SearchCaptionMLMiss(navObjects);
-                consoleError |= PrintResult.print("No caption translation: ", searchProcessor.search(""));
-            }
-            if(consoleValidateTran) {
-                SearchProcessor searchProcessor = new SearchTransactionInValidate(navObjects);
-                consoleError |= PrintResult.print("New transaction in validate: ", searchProcessor.search(""));
+            for (SearchProcessor searchProcessor : searchProcessors) {
+                if(argumentParser.containsArgument(searchProcessor.getConsoleArgument())) {
+                    consoleError |= PrintResult.print(searchProcessor.getCaption() + ": ", searchProcessor.search(""));
+                }
             }
             if(consoleError){
                 System.exit(3);

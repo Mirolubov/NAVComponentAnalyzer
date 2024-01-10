@@ -1,4 +1,4 @@
-package search;
+package com.company.navcomponentanalyzer.searchvalidate;
 
 import com.company.navcomponentanalyzer.core.model.*;
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
@@ -10,12 +10,14 @@ import java.util.Map;
 
 public class SearchTransactionInValidate implements SearchProcessor {
     private NavObjects navObjects;
-
-    public SearchTransactionInValidate(NavObjects navObjects) {
-        this.navObjects = navObjects;
-    }
+    private final String MODULE_NAME = "Transactions in VALIDATE";
+    private final String CONSOLE_ARGUMENT = "-validate";
 
     public SearchTransactionInValidate() {
+    }
+
+    public void setNavObjects(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 
     @Override
@@ -36,6 +38,16 @@ public class SearchTransactionInValidate implements SearchProcessor {
             }
         });
         return SearchProcessor.getData(searchResultList);
+    }
+
+    @Override
+    public String getCaption() {
+        return MODULE_NAME;
+    }
+
+    @Override
+    public String getConsoleArgument() {
+        return CONSOLE_ARGUMENT;
     }
 
     private void recurseSearchSystemProc(NavObject n, Procedure procedure, Map<String, Var> varList, List<SearchResult> searchResultList,

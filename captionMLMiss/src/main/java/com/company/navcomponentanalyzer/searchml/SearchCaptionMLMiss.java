@@ -1,4 +1,4 @@
-package search;
+package com.company.navcomponentanalyzer.searchml;
 
 import com.company.navcomponentanalyzer.core.config.AppProperties;
 import com.company.navcomponentanalyzer.core.model.*;
@@ -11,8 +11,10 @@ import java.util.Map;
 
 public class SearchCaptionMLMiss implements SearchProcessor {
     private NavObjects navObjects;
+    private final String MODULE_NAME = "Check caption ML";
+    private final String CONSOLE_ARGUMENT = "-captionml";
 
-    public SearchCaptionMLMiss(NavObjects navObjects) {
+    public void setNavObjects(NavObjects navObjects) {
         this.navObjects = navObjects;
     }
 
@@ -42,6 +44,16 @@ public class SearchCaptionMLMiss implements SearchProcessor {
             }
         }
         return SearchProcessor.getData(searchResultList);
+    }
+
+    @Override
+    public String getCaption() {
+        return MODULE_NAME;
+    }
+
+    @Override
+    public String getConsoleArgument() {
+        return CONSOLE_ARGUMENT;
     }
 
     private static void checkVarCaptions(NavObject navObject, Map.Entry<String, Var> varEntry, List<SearchResult> searchResultList) {

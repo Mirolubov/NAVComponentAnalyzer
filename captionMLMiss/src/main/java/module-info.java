@@ -1,5 +1,5 @@
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
-import search.SearchCaptionMLMiss;
+import com.company.navcomponentanalyzer.searchml.SearchCaptionMLMiss;
 
 module captionMLMiss {
     requires core;

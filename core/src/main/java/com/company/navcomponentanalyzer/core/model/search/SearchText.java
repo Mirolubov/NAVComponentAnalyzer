@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchText implements SearchProcessor{
-    private final NavObjects navObjects;
+    private NavObjects navObjects;
+    private final String MODULE_NAME = "Search Text";
 
     public SearchText(NavObjects navObjects) {
         this.navObjects = navObjects;
@@ -35,5 +36,20 @@ public class SearchText implements SearchProcessor{
             }
         }
         return SearchProcessor.getData(searchResultList);
+    }
+
+    @Override
+    public String getCaption() {
+        return MODULE_NAME;
+    }
+
+    @Override
+    public String getConsoleArgument() {
+        return null;
+    }
+
+    @Override
+    public void setNavObjects(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 }

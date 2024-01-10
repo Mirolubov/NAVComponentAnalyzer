@@ -1,5 +1,5 @@
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
-import search.SearchGUIInTran;
+import com.company.navcomponentanalyzer.searchgui.SearchGUIInTran;
 
 module guiInTran {
     requires core;

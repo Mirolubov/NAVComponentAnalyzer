@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class SearchUsages implements SearchProcessor{
-    private final NavObjects navObjects;
+    private NavObjects navObjects;
     private final static String procFinishChars = "() ;\r\n<>!=,.:";
     private final static String procStartChars = "() ;<>!=,";
+    private final String MODULE_NAME = "Search Usages";
 
     public SearchUsages(NavObjects navObjects) {
         this.navObjects = navObjects;
@@ -50,6 +51,21 @@ public class SearchUsages implements SearchProcessor{
             }
         }
         return SearchProcessor.getData(searchResultList);
+    }
+
+    @Override
+    public String getCaption() {
+        return MODULE_NAME;
+    }
+
+    @Override
+    public String getConsoleArgument() {
+        return null;
+    }
+
+    @Override
+    public void setNavObjects(NavObjects navObjects) {
+        this.navObjects = navObjects;
     }
 
     private void searchUsesInVarList(String searchStr, NavObject navObject, Map<String, Var> varList, NavObject selectedObject, List<SearchResult> searchResultList) {

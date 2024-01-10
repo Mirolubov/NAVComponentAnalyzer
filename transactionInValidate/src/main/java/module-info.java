@@ -1,5 +1,5 @@
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
-import search.SearchTransactionInValidate;
+import com.company.navcomponentanalyzer.searchvalidate.SearchTransactionInValidate;
 
 module transactionInValidate {
     requires core;
