@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 public class BodyParser {
     private final static String PROCEDURE = "PROCEDURE ";
     private final static String FIELDS = "  FIELDS";
+    private final static String KEYS = "  KEYS";
     private final static String GROUP_START = "  {";
     private final static String GROUP_END = "  }";
     private final static String BEGIN = "BEGIN";
@@ -64,6 +65,10 @@ public class BodyParser {
 
     public static boolean fieldsRange(String line) {
         return line.equals(FIELDS);
+    }
+
+    public static boolean keysRange(String line) {
+        return line.equals(KEYS);
     }
 
     public static boolean groupEnd(String line) {
@@ -226,14 +231,17 @@ public class BodyParser {
         Map<String, Procedure> procedures = navObject.getProcedures();
         Map<String, Integer> fieldIndexes = null;
         Map<String, Field> fields = null;
+        StringBuilder keyBody = null;
         if (navObject instanceof Table) {
             fieldIndexes = ((Table)navObject).getFieldIndexes();
             fields = ((Table)navObject).getFields();
+            keyBody = new StringBuilder();
         }
 
         Stream<String> lines = body.lines();
         int lineNo = 0;
         boolean fieldRange = false;
+        boolean keyRange = false;
         boolean codeStart = false;
         boolean varBlock = false;
         boolean varLoaded = false;
@@ -327,7 +335,24 @@ public class BodyParser {
                 } else if (BodyParser.fieldsRange((String) line)) {
                     fieldRange = true;
                 }
-
+                if (keyRange) {
+                    if(((String)line).equals(GROUP_START)) {
+                        continue;
+                    }
+                    if (BodyParser.groupEnd((String) line)){
+                        keyRange = false;
+                        continue;
+                    }
+                    keyBody.append((String) line);
+                    if( ((String) line).contains("}")){
+                        Index index = new Index(keyBody);
+                        ((Table)navObject).addKey(index);
+                        keyBody.setLength(0);
+                    }
+                } else if (BodyParser.keysRange((String) line)) {
+                    keyRange = true;
+                    keyBody.setLength(0);
+                }
             }
         }
     }

@@ -23,6 +23,9 @@ public class ArgumentParser {
     }
 
     public boolean containsArgument(String argument) {
+        if (argument == null) {
+            return false;
+        }
         return arguments.contains(argument);
     }
 
