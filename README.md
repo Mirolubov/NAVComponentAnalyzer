@@ -10,13 +10,15 @@ Allows you to search for procedure calls and specified antipatterns, such as:
 3. Lack of translation into required languages
 
 ### Execute GUI:
-1. Build jar artifact
-2. Run as: java -jar ./NavComponentAnalizer.jar
+1. Build jar artifacts (mvn verify)
+2. Go to "./core/target" path
+3. Run as: java --module-path core-1.0.jar --module core
 
 ### Execute console:
-1. Build jar artifact
-2. Run as: java -jar ./NavComponentAnalyzer.jar -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml
-3. exit code = 3 if found antipatterns
+1. Build jar artifacts (mvn verify)
+2. Go to "./core/target" path 
+3. Run as: java --module-path core-1.0.jar --module core -console -f c:\Temp -n CU1204.txt CU50001.txt TAB50000.txt -captionml
+4. exit code = 3 if found antipatterns
 
 ### Console arguments:
 * -f             folder to search files
