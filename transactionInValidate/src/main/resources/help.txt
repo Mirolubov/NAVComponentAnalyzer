@@ -1,0 +1,1 @@
+ -validate      enable console transaction in validate check

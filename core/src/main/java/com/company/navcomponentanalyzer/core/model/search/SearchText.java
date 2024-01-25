@@ -1,8 +1,7 @@
 package com.company.navcomponentanalyzer.core.model.search;
 
-import com.company.navcomponentanalyzer.core.model.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
 import com.company.navcomponentanalyzer.core.model.NavObjects;
-import com.company.navcomponentanalyzer.core.view.MainFrame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class SearchText implements SearchProcessor{
                 }
             }
         }
-        return SearchProcessor.getData(searchResultList);
+        return SearchResult.getData(searchResultList);
     }
 
     @Override
@@ -51,5 +50,10 @@ public class SearchText implements SearchProcessor{
     @Override
     public void setNavObjects(NavObjects navObjects) {
         this.navObjects = navObjects;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 }

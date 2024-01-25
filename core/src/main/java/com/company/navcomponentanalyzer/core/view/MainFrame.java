@@ -10,7 +10,7 @@ import com.company.navcomponentanalyzer.core.listener.menu.SearchTextListener;
 import com.company.navcomponentanalyzer.core.listener.menu.ThemeListener;
 import com.company.navcomponentanalyzer.core.listener.menu.antipattern.AntipatternListener;
 import com.company.navcomponentanalyzer.core.model.NavObjects;
-import com.company.navcomponentanalyzer.core.model.NavType;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
 import com.company.navcomponentanalyzer.core.model.Theme;
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
 
@@ -62,7 +62,7 @@ public class MainFrame extends JFrame {
 
         listModel = new DefaultListModel<>();
         list = new JList<>(listModel);
-        list.setCellRenderer(new BoldFirstElementRenderer());
+        list.setCellRenderer(new NavObjectCellElementRenderer());
         MethodListSelectionListener methodListSelectionListener = new MethodListSelectionListener(this);
         list.addListSelectionListener(methodListSelectionListener);
         list.setComponentPopupMenu(new MethodListPopupMenu(this));
@@ -195,16 +195,19 @@ public class MainFrame extends JFrame {
     private JMenu createMenuFile() {
         JMenu menu = new JMenu("File");
         FileListener fileListener = new FileListener(this);
-        // ------------------------------------
-        // добавление простых элементов меню
-        // элемент 1
+
         JMenuItem itm = new JMenuItem("Open");
         itm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 InputEvent.CTRL_DOWN_MASK));
         menu.add(itm);
         itm.addActionListener(fileListener);
 
-        // элемент 2
+        itm = new JMenuItem("Append");
+        itm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
+                InputEvent.CTRL_DOWN_MASK));
+        itm.addActionListener(fileListener);
+        menu.add(itm);
+
         JMenu submenu = new JMenu("Open Recent");
         ConfigFile configFile = ConfigFile.getInstance();
         ArrayList<String> recentFiles = configFile.getRecentFiles();
@@ -218,7 +221,6 @@ public class MainFrame extends JFrame {
         }
         menu.add(submenu);
 
-        // элемент 3
         itm = new JMenuItem("Close");
         itm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
                 InputEvent.CTRL_DOWN_MASK));

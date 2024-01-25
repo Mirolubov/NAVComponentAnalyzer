@@ -1,6 +1,9 @@
 package com.company.navcomponentanalyzer.core.listener;
 
-import com.company.navcomponentanalyzer.core.model.*;
+import com.company.navcomponentanalyzer.core.model.object.Form;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.Table;
+import com.company.navcomponentanalyzer.core.model.object.element.*;
 import com.company.navcomponentanalyzer.core.view.MainFrame;
 
 import javax.swing.*;
@@ -42,20 +45,49 @@ public class ObjectTreeSelectionListener implements TreeSelectionListener {
                     for (Map.Entry<String, Var> variable : varList.entrySet()) {
                         listModel.addElement(variable.getKey());
                     }
-                    listModel.addElement("Procedures");
-                    Map<String, Integer> procedureIndexes = selectedObject.getProcedureIndexes();
-                    for (Map.Entry<String, Integer> proc : procedureIndexes.entrySet()) {
-                        listModel.addElement(proc.getKey());
+                    listModel.addElement("Triggers");
+                    Map<String, Procedure> procedures = selectedObject.getProcedures();
+                    for (Map.Entry<String, Procedure> procMap : procedures.entrySet()) {
+                        Procedure procedure = procMap.getValue();
+                        if (procedure instanceof Trigger) {
+                            listModel.addElement(procedure.getName());
+                        }
                     }
-                    if (selectedObject.getNavType() == NavType.Table) {
+                    listModel.addElement("Procedures");
+                    for (Map.Entry<String, Procedure> procMap : procedures.entrySet()) {
+                        Procedure procedure = procMap.getValue();
+                        if (!(procedure instanceof Trigger)) {
+                            listModel.addElement(procedure.getName());
+                        }
+                    }
+                    if (selectedObject.isTable()) {
                         listModel.addElement("Fields");
                         if (selectedObject instanceof Table) {
-                            Map<String, Integer> fieldIndexes = ((Table)selectedObject).getFieldIndexes();
-                            for (Map.Entry<String, Integer> field : fieldIndexes.entrySet()) {
-                                listModel.addElement(field.getKey());
+                            Table table = (Table)selectedObject;
+                            Map<String, Field> fields = table.getFields();
+                            for (Map.Entry<String, Field> fieldMap : fields.entrySet()) {
+                                listModel.addElement(fieldMap.getKey());
+                                Field field = fieldMap.getValue();
+                                for (Trigger trigger : field.getTriggers()) {
+                                    listModel.addElement("  tr: " + trigger.getName());
+                                }
                             }
                         }
 
+                    }
+                    if (selectedObject.isForm()) {
+                        listModel.addElement("Controls");
+                        if (selectedObject instanceof Form) {
+                            Form form = (Form)selectedObject;
+                            Map<String, Control> controls = form.getControls();
+                            for (Map.Entry<String, Control> controlMap : controls.entrySet()) {
+                                listModel.addElement(controlMap.getKey());
+                                Control control = controlMap.getValue();
+                                for (Trigger trigger : control.getTriggers()) {
+                                    listModel.addElement("  tr: " + trigger.getName());
+                                }
+                            }
+                        }
                     }
                 } else {
                     textArea.setText(treeNode.toString());

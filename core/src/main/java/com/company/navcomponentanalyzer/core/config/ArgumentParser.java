@@ -22,6 +22,10 @@ public class ArgumentParser {
         return arguments.contains("-console");
     }
 
+    public boolean allPlugins() {
+        return arguments.contains("-all");
+    }
+
     public boolean containsArgument(String argument) {
         if (argument == null) {
             return false;

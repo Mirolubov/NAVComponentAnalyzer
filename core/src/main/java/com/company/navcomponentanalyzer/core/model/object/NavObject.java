@@ -1,17 +1,21 @@
-package com.company.navcomponentanalyzer.core.model;
+package com.company.navcomponentanalyzer.core.model.object;
+
+import com.company.navcomponentanalyzer.core.model.object.element.Procedure;
+import com.company.navcomponentanalyzer.core.model.object.element.Var;
+import com.company.navcomponentanalyzer.core.model.parser.BodyParser;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
 public class NavObject implements Comparable<NavObject> {
-    protected final int id;
-    protected final String name;
-    protected final NavType navType;
-    protected final Map<String, Integer> procedureIndexes;
-    protected final Map<String, Procedure> procedures;
-    protected final Map<String, Var> varList;
-    protected final Map<String, Integer> varIndexes;
+    private final int id;
+    private final String name;
+    private final NavType navType;
+    private final Map<String, Integer> procedureIndexes;
+    private final Map<String, Procedure> procedures;
+    private final Map<String, Var> varList;
+    private final Map<String, Integer> varIndexes;
     private String body;
     private long lineCount;
 
@@ -98,5 +102,12 @@ public class NavObject implements Comparable<NavObject> {
         } else {
             return this.getNavType().toString().compareTo(navObject.getNavType().toString());
         }
+    }
+
+    public boolean isTable() {
+        return getNavType().equals(NavType.Table);
+    }
+    public boolean isForm() {
+        return getNavType().equals(NavType.Form);
     }
 }

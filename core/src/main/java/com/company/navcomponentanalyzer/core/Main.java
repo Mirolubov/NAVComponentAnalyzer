@@ -25,23 +25,53 @@ import java.util.stream.Collectors;
 public class Main{
 
     public static void main(String[] args) {
+        List<SearchProcessor> searchProcessors = loadSearchProcessors();
+
         boolean consoleMode = false;
         boolean consoleError = false;
         List<String> files = null;
         String folder = "";
+        AppProperties appProperties = AppProperties.initAppProperties();
         ArgumentParser argumentParser = new ArgumentParser(args);
         if (argumentParser.hasArguments()) {
             if (argumentParser.showHelp()) {
-                displayHelpMessage();
+                displayHelpMessage(searchProcessors);
             }
             consoleMode = argumentParser.consoleMode();
             folder = argumentParser.extractNextFolder();
             files = argumentParser.extractNextFiles();
             String charsetName = argumentParser.extractCharsetName();
-            AppProperties appProperties = AppProperties.initAppProperties();
             appProperties.setCharsetName(charsetName);
         }
+        System.out.println("Charset: " + appProperties.getCharsetName());
 
+
+        MainFrame mainFrame = null;
+        NavObjects navObjects = new NavObjects();
+        for (SearchProcessor searchProcessor : searchProcessors) {
+            searchProcessor.setNavObjects(navObjects);
+        }
+
+        if(!consoleMode) {
+            mainFrame = new MainFrame(navObjects, searchProcessors);
+        }
+        if (files != null) {
+            for (String file : files) {
+                FileLoader fileLoader = new FileLoader(String.format("%s/%s", folder, file), mainFrame, navObjects);
+                fileLoader.processFile();
+            }
+            for (SearchProcessor searchProcessor : searchProcessors) {
+                if(argumentParser.containsArgument(searchProcessor.getConsoleArgument()) || argumentParser.allPlugins()) {
+                    consoleError |= PrintResult.print(searchProcessor.getCaption() + ": ", searchProcessor.search(""));
+                }
+            }
+            if(consoleError){
+                System.exit(3);
+            }
+        }
+    }
+
+    private static List<SearchProcessor> loadSearchProcessors() {
         Path pluginsDir = Paths.get("plugins");
         // Будем искать плагины в папке plugins
         ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
@@ -68,33 +98,10 @@ public class Main{
 
         // Найдём все реализации сервиса IService в слое плагинов и в слое Boot
         List<SearchProcessor> searchProcessors = SearchProcessor.getSearchProcessors(layer);
-
-        MainFrame mainFrame = null;
-        NavObjects navObjects = new NavObjects();
-        for (SearchProcessor searchProcessor : searchProcessors) {
-            searchProcessor.setNavObjects(navObjects);
-        }
-
-        if(!consoleMode) {
-            mainFrame = new MainFrame(navObjects, searchProcessors);
-        }
-        if (files != null) {
-            for (String file : files) {
-                FileLoader fileLoader = new FileLoader(String.format("%s/%s", folder, file), mainFrame, navObjects);
-                fileLoader.processFile();
-            }
-            for (SearchProcessor searchProcessor : searchProcessors) {
-                if(argumentParser.containsArgument(searchProcessor.getConsoleArgument())) {
-                    consoleError |= PrintResult.print(searchProcessor.getCaption() + ": ", searchProcessor.search(""));
-                }
-            }
-            if(consoleError){
-                System.exit(3);
-            }
-        }
+        return searchProcessors;
     }
 
-    private static void displayHelpMessage() {
+    private static void displayHelpMessage(List<SearchProcessor> searchProcessors) {
         try (InputStream in = Main.class.getClassLoader().getResourceAsStream("help.txt")) {
             if (in != null) {
                 int ch;
@@ -106,6 +113,12 @@ public class Main{
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        for (SearchProcessor searchProcessor : searchProcessors) {
+            String description = searchProcessor.getDescription();
+            if(description != null) {
+                System.out.println(description);
+            }
         }
     }
 }

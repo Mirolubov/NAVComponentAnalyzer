@@ -1,6 +1,6 @@
 package com.company.navcomponentanalyzer.core.listener;
 
-import com.company.navcomponentanalyzer.core.model.Table;
+import com.company.navcomponentanalyzer.core.model.object.Table;
 import com.company.navcomponentanalyzer.core.view.MainFrame;
 
 import javax.swing.*;

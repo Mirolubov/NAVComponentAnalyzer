@@ -1,14 +1,25 @@
 package com.company.navcomponentanalyzer.searchvalidate;
 
 import com.company.navcomponentanalyzer.core.model.*;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
+import com.company.navcomponentanalyzer.core.model.object.Table;
+import com.company.navcomponentanalyzer.core.model.object.element.Field;
+import com.company.navcomponentanalyzer.core.model.object.element.Procedure;
+import com.company.navcomponentanalyzer.core.model.object.element.Trigger;
+import com.company.navcomponentanalyzer.core.model.object.element.Var;
 import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
 import com.company.navcomponentanalyzer.core.model.search.SearchResult;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class SearchTransactionInValidate implements SearchProcessor {
+    public static final String ON_VALIDATE = "OnValidate";
     private NavObjects navObjects;
     private final String MODULE_NAME = "Transactions in VALIDATE";
     private final String CONSOLE_ARGUMENT = "-validate";
@@ -25,19 +36,21 @@ public class SearchTransactionInValidate implements SearchProcessor {
         List<SearchResult> searchResultList = new ArrayList<>();
 
         navObjects.getNavObjectsList().forEach((n) -> {
-            if (n.getNavType() == NavType.Table && n instanceof Table) {
+            if (n.isTable() && n instanceof Table) {
                 Map<String, Field> fields = ((Table)n).getFields();
                 for(Map.Entry<String, Field> fieldMap: fields.entrySet()){
                     Field field = fieldMap.getValue();
                     ArrayList<Trigger> triggers = field.getTriggers();
                     for(Trigger trigger : triggers){
-                        Map<String, Var> varList = trigger.getVarList();
-                        recurseSearchSystemProc(n, trigger, varList, searchResultList, "", "");
+                        if(trigger.getName().equals(ON_VALIDATE)) {
+                            Map<String, Var> varList = trigger.getVarList();
+                            recurseSearchSystemProc(n, trigger, varList, searchResultList, "", "");
+                        }
                     }
                 }
             }
         });
-        return SearchProcessor.getData(searchResultList);
+        return SearchResult.getData(searchResultList);
     }
 
     @Override
@@ -147,5 +160,15 @@ public class SearchTransactionInValidate implements SearchProcessor {
             }
         }
         return 0;
+    }
+
+    @Override
+    public String getDescription() {
+        try (InputStream in = getClass().getModule().getResourceAsStream("help.txt")) {
+            return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

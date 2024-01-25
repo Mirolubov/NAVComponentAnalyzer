@@ -10,6 +10,7 @@
         <module name="core" />
         <module name="captionMLMiss" />
         <module name="guiInTran" />
+        <module name="siftUsage" />
       </profile>
     </annotationProcessing>
   </component>

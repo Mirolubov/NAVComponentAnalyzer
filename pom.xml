@@ -56,5 +56,6 @@
         <module>captionMLMiss</module>
         <module>guiInTran</module>
         <module>transactionInValidate</module>
+        <module>siftUsage</module>
     </modules>
 </project>

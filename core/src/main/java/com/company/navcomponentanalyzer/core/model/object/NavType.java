@@ -1,4 +1,4 @@
-package com.company.navcomponentanalyzer.core.model;
+package com.company.navcomponentanalyzer.core.model.object;
 
 public enum NavType {
     Table,

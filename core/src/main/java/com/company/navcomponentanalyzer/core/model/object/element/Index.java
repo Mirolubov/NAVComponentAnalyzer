@@ -1,4 +1,4 @@
-package com.company.navcomponentanalyzer.core.model;
+package com.company.navcomponentanalyzer.core.model.object.element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,9 @@ public class Index {
     private List<String> fields = new ArrayList<>();
     private boolean clustered;
     private boolean sift;
+    private int lineNo;
+    private int tableNo;
+
     private List<String> siftFields = new ArrayList<>();
 
     public Index(StringBuilder keyBody) {
@@ -21,7 +24,7 @@ public class Index {
             return;
         }
         for (String field : indexParts[1].split(",")) {
-            addField(field);
+            addField(field.strip());
         }
         if(indexParts.length < 3) {
             return;
@@ -31,7 +34,7 @@ public class Index {
         if(sift) {
             String siftFields = indexParts[2].substring(SUM_INDEX_FIELDS.length());
             for (String field : siftFields.split(",")) {
-                addSiftFields(field);
+                addSiftFields(field.strip());
             }
 
         }
@@ -51,5 +54,37 @@ public class Index {
 
     public void addSiftFields(String siftField) {
         this.siftFields.add(siftField);
+    }
+
+    public boolean isClustered() {
+        return clustered;
+    }
+
+    public boolean isSift() {
+        return sift;
+    }
+
+    public int getLineNo() {
+        return lineNo;
+    }
+
+    public void setLineNo(int lineNo) {
+        this.lineNo = lineNo;
+    }
+
+    public List<String> getFields() {
+        return fields;
+    }
+
+    public List<String> getSiftFields() {
+        return siftFields;
+    }
+
+    public int getTableNo() {
+        return tableNo;
+    }
+
+    public void setTableNo(int tableNo) {
+        this.tableNo = tableNo;
     }
 }

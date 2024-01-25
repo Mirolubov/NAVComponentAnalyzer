@@ -26,7 +26,10 @@ public class FileListener implements ActionListener {
                 mainFrame.close();
                 break;
             case "Open":
-                openFile();
+                openFile(false);
+                break;
+            case "Append":
+                openFile(true);
                 break;
             default:
                 FileLoader fileLoader = new FileLoader(mainFrame);
@@ -37,13 +40,15 @@ public class FileListener implements ActionListener {
         }
     }
 
-    private void openFile() {
+    private void openFile(boolean append) {
         JFileChooser fileOpen = new JFileChooser();
         int ret = fileOpen.showDialog(null, "Open File");
         if (ret == JFileChooser.APPROVE_OPTION) {
             String path = fileOpen.getSelectedFile().getAbsolutePath();
             FileLoader fileLoader = new FileLoader(path, mainFrame, mainFrame.getNavObjects());
-            fileLoader.clearNavObjects();
+            if (!append) {
+                fileLoader.clearNavObjects();
+            }
             fileLoader.processFile();
         }
     }

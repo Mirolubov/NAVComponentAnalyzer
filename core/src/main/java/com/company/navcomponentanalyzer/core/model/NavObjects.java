@@ -1,5 +1,10 @@
 package com.company.navcomponentanalyzer.core.model;
 
+import com.company.navcomponentanalyzer.core.model.object.Form;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
+import com.company.navcomponentanalyzer.core.model.object.Table;
+
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -46,10 +51,13 @@ public class NavObjects {
     public static NavObject createNavObject(Integer id, String name, NavType type) {
         if(type == null)
             return null;
-        if (type.equals(NavType.Table)){
-            return new Table(id, name, type);
-        } else {
-            return new NavObject(id, name, type);
+        switch (type){
+            case Form:
+                return new Form(id, name, type);
+            case Table:
+                return new Table(id, name, type);
+            default:
+                return new NavObject(id, name, type);
         }
     }
 }

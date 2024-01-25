@@ -1,7 +1,10 @@
 package com.company.navcomponentanalyzer.core.model.search;
 
 import com.company.navcomponentanalyzer.core.model.*;
-import com.company.navcomponentanalyzer.core.view.MainFrame;
+import com.company.navcomponentanalyzer.core.model.object.Form;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.Table;
+import com.company.navcomponentanalyzer.core.model.object.element.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +52,32 @@ public class SearchUsages implements SearchProcessor{
                 Map<String, Var> procVarList = procedure.getVarList();
                 searchUsesInVarList(searchStr, navObject, procVarList, selectedObject, searchResultList);
             }
+            //среди триггеров полей
+            if (navObject.isTable()) {
+                Table table = (Table) navObject;
+                Map<String, Field> fields = table.getFields();
+                for (Map.Entry<String, Field> fieldMap : fields.entrySet()) {
+                    Field field = fieldMap.getValue();
+                    for (Trigger trigger : field.getTriggers()) {
+                        Map<String, Var> procVarList = trigger.getVarList();
+                        searchUsesInVarList(searchStr, navObject, procVarList, selectedObject, searchResultList);
+                    }
+                }
+            }
+            //среди триггеров контролов
+            if (navObject.isForm()) {
+                Form form = (Form) navObject;
+                Map<String, Control> controls = form.getControls();
+                for (Map.Entry<String, Control> controlMap : controls.entrySet()) {
+                    Control control = controlMap.getValue();
+                    for (Trigger trigger : control.getTriggers()) {
+                        Map<String, Var> procVarList = trigger.getVarList();
+                        searchUsesInVarList(searchStr, navObject, procVarList, selectedObject, searchResultList);
+                    }
+                }
+            }
         }
-        return SearchProcessor.getData(searchResultList);
+        return SearchResult.getData(searchResultList);
     }
 
     @Override
@@ -136,4 +163,10 @@ public class SearchUsages implements SearchProcessor{
         }
         return false;
     }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
 }

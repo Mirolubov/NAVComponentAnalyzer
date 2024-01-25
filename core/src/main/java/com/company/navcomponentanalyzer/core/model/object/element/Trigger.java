@@ -1,4 +1,4 @@
-package com.company.navcomponentanalyzer.core.model;
+package com.company.navcomponentanalyzer.core.model.object.element;
 
 public class Trigger extends Procedure{
 

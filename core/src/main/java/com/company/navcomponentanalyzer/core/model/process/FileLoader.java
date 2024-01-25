@@ -1,10 +1,9 @@
 package com.company.navcomponentanalyzer.core.model.process;
 
 import com.company.navcomponentanalyzer.core.config.ConfigFile;
-import com.company.navcomponentanalyzer.core.model.BodyParser;
-import com.company.navcomponentanalyzer.core.model.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
 import com.company.navcomponentanalyzer.core.model.NavObjects;
-import com.company.navcomponentanalyzer.core.model.NavType;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
 import com.company.navcomponentanalyzer.core.view.MainFrame;
 
 import javax.swing.*;

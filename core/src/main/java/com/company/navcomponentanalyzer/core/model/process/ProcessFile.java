@@ -1,9 +1,9 @@
 package com.company.navcomponentanalyzer.core.model.process;
 
 import com.company.navcomponentanalyzer.core.config.AppProperties;
-import com.company.navcomponentanalyzer.core.model.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
 import com.company.navcomponentanalyzer.core.model.NavObjects;
-import com.company.navcomponentanalyzer.core.model.NavType;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
 import com.company.navcomponentanalyzer.core.view.MainFrame;
 import com.company.navcomponentanalyzer.core.view.ProgressBar;
 

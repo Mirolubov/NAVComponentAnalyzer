@@ -1,6 +1,7 @@
-package com.company.navcomponentanalyzer.core.model;
+package com.company.navcomponentanalyzer.core.model.object.element;
 
 import com.company.navcomponentanalyzer.core.config.AppProperties;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
 
 import java.util.HashMap;
 import java.util.List;

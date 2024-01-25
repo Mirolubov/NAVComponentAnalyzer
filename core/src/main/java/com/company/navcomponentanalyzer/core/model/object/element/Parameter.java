@@ -1,6 +1,8 @@
-package com.company.navcomponentanalyzer.core.model;
+package com.company.navcomponentanalyzer.core.model.object.element;
 
-public class Parameter extends Var{
+import com.company.navcomponentanalyzer.core.model.object.element.Var;
+
+public class Parameter extends Var {
     private Boolean byVar;
     private final static String VAR = "VAR ";
 

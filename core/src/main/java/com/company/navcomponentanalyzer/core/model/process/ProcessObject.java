@@ -1,8 +1,8 @@
 package com.company.navcomponentanalyzer.core.model.process;
 
-import com.company.navcomponentanalyzer.core.model.BodyParser;
-import com.company.navcomponentanalyzer.core.model.NavObject;
-import com.company.navcomponentanalyzer.core.model.NavType;
+import com.company.navcomponentanalyzer.core.model.object.NavObject;
+import com.company.navcomponentanalyzer.core.model.object.NavType;
+import com.company.navcomponentanalyzer.core.model.parser.ProcedureParser;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -19,7 +19,7 @@ public class ProcessObject implements Runnable{
         try {
             navObject = navQueue.take();
             while (navObject.getId() != 0) {
-                BodyParser.parseProcedures(navObject);
+                ProcedureParser.parseProcedures(navObject);
                 navObject = navQueue.take();
             }
             navObject = new NavObject(0, "", NavType.Table);
