@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Field {
-    private final static String CAPTIONML_START = "CaptionML=";
-    private final static String TRIGGER_PATTERN = ".*On([a-zA-Z]+)=.*";
+    private static final String CAPTIONML_START = "CaptionML=";
+    private static final String TRIGGER_PATTERN = ".*On([a-zA-Z]+)=.*";
     private static final String FIELD_CLASS = "FieldClass=";
     private static final String FLOW_FIELD = "FlowField";
     private static final String CALC_FORMULA = "CalcFormula=";
@@ -39,6 +39,7 @@ public class Field {
         captions = new HashMap<>();
         bodyBuilder = new StringBuilder();
         caption = "";
+        fieldClass = "Normal";
         captionBlock = false;
         bodyBlock = 0;
     }
@@ -141,7 +142,9 @@ public class Field {
                 try {
                     fieldClass = part.substring(fieldClassPos + FIELD_CLASS.length());
                     if (fieldClass.equals(FLOW_FIELD)) {
-                        parseCalcFormula(parts[i + 1]);
+                        while(parts[++i].strip().indexOf(CALC_FORMULA) == -1 && i < parts.length) {
+                        }
+                        parseCalcFormula(parts[i].strip());
                     }
                 }catch (IndexOutOfBoundsException e) {
                     e.printStackTrace();
@@ -153,9 +156,11 @@ public class Field {
 
     private void parseCalcFormula(String calcFormulaString) {
         if(calcFormulaString.indexOf(CALC_FORMULA) != 0){
+            System.out.println("Problem parseCalcFormula:");
+            System.out.println(calcFormulaString);
             return;
         }
-        calcFormulaString = calcFormulaString.substring(CALC_FORMULA.length(), calcFormulaString.length() - 1);
+        calcFormulaString = calcFormulaString.substring(CALC_FORMULA.length());
         calcFormula = new CalcFormula(calcFormulaString);
     }
 

@@ -89,7 +89,7 @@ public class ConfigFile {
             File file = new File(fileName);
             inputStream = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.printf("Config file: %s not exists\r\n", fileName);
         } finally {
             if (inputStream != null) {
                 try {

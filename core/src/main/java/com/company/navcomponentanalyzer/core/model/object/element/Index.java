@@ -11,6 +11,7 @@ public class Index {
     private boolean sift;
     private int lineNo;
     private int tableNo;
+    private String tableName;
 
     private List<String> siftFields = new ArrayList<>();
 
@@ -86,5 +87,13 @@ public class Index {
 
     public void setTableNo(int tableNo) {
         this.tableNo = tableNo;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 }

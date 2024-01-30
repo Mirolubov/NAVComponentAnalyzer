@@ -5,7 +5,7 @@ public class PrintResult {
         if(result.length == 0) {
             return false;
         }
-        System.out.println(caption + " occurs " + result.length + " times.");
+        System.out.println(caption);
         for (int i = 0; i < result.length; i++) {
             if (result[i].length != 5) {
                 throw new IllegalArgumentException("Wrong result of search");
@@ -19,6 +19,7 @@ public class PrintResult {
 
             System.out.print("\r\n");
         }
+        System.out.println(caption + " occurs " + result.length + " times.");
         return true;
     }
 }

@@ -61,7 +61,31 @@ public class SearchSiftUsage implements SearchProcessor {
     private boolean searchSiftInObject(NavObject navObject, Index key) {
         boolean siftUsed = false;
         if(navObject.getId() == key.getTableNo() && navObject.isTable()) {
-            //TODO: поиск в той же таблице
+            //поиск в той же таблице
+            String body = navObject.getBody();
+            String lastPart = body;
+            int calcsumPos = 0, setcurrentkeyPos = 0;
+            while((setcurrentkeyPos = lastPart.indexOf(" " + SETCURRENTKEY))!=-1){
+                lastPart = lastPart.substring(setcurrentkeyPos + SETCURRENTKEY.length() + 2); //2 - 2 braces ()
+                int bracePos = lastPart.indexOf(")");
+                String keyFields = lastPart.substring(0, bracePos);
+                keyFields = keyFields.replace("\"", "");
+                String[] splitFields = keyFields.split(",");
+                if(!Arrays.asList(splitFields).containsAll(key.getSiftFields())) {
+                    continue;
+                }
+                if((calcsumPos = lastPart.indexOf(" " + CALCSUMS))!=-1){
+                    String lastPartCalc = lastPart.substring(calcsumPos + CALCSUMS.length() + 2); //2 - 2 braces ()
+                    int bracePosCalc = lastPartCalc.indexOf(")");
+                    String calcFields = lastPart.substring(0, bracePos);
+                    calcFields = calcFields.replace("\"", "");
+                    String[] splitFieldsCalc = calcFields.split(",");
+                    if(key.getSiftFields().containsAll(Arrays.asList(splitFieldsCalc))){
+                        return true;
+                    }
+                }
+
+            }
         }
         //среди calcformula
         if(navObject.isTable()) {
@@ -71,8 +95,20 @@ public class SearchSiftUsage implements SearchProcessor {
                 Field field = fieldMap.getValue();
                 if(field.isFlowfield()){
                     CalcFormula calcFormula = field.getCalcFormula();
+                    if(calcFormula.getAgregate() == null) {
+                        System.out.println("Proble CalcFormula:");
+                        System.out.println(calcFormula.getBody());
+                    }
                     if (calcFormula.getAgregate().equals("Sum")) {
-                        //TODO: сверка формулы
+                        if(!key.getTableName().equals(calcFormula.getTableName())){
+                            continue;
+                        }
+                        if(!key.getSiftFields().contains(calcFormula.getFieldName())){
+                            continue;
+                        }
+                        if(calcFormula.getColumns().containsAll(key.getFields())){
+                            return true;
+                        }
                     }
                 }
             }
@@ -104,26 +140,38 @@ public class SearchSiftUsage implements SearchProcessor {
                 if (executes.containsKey(CALCSUMS)) {
                     List<Integer> linesExecute = executes.get(CALCSUMS);
                     for(Integer line: linesExecute) {
+                        String[] splitFields = null;
                         try {
-                            String[] splitFields = extractFieldsFrom(CALCSUMS, navObject, line);
-                            if(key.getSiftFields().containsAll(Arrays.asList(splitFields))) {
-                                //Мы нашли CALCSUMS, теперь надо убедится что перед ним стоит SETCURRENTKEY с нужными полями
-                                if (executes.containsKey(SETCURRENTKEY)) {
-                                    List<Integer> linesExecuteSCC = executes.get(SETCURRENTKEY);
-                                    for (Integer lineSCC : linesExecuteSCC) {
-                                        if(lineSCC <= line) {
+                            splitFields = extractFieldsFrom(CALCSUMS, navObject, line);
+                        }catch (IndexOutOfBoundsException e) {
+                            System.out.println("Error: " + e.getLocalizedMessage());
+                            System.out.println(this.getClass().toString() +  ": searchUsesInVarList.extractFieldsFrom(CALCSUMS)");
+                            System.out.println(((String) (navObject.getBody().lines().toArray())[line - 1]).stripLeading());
+                        }
+                        if(key.getSiftFields().containsAll(Arrays.asList(splitFields))) {
+                            //Мы нашли CALCSUMS, теперь надо убедится что перед ним стоит SETCURRENTKEY с нужными полями
+                            if (executes.containsKey(SETCURRENTKEY)) {
+                                List<Integer> linesExecuteSCC = executes.get(SETCURRENTKEY);
+                                for (Integer lineSCC : linesExecuteSCC) {
+                                    if(lineSCC <= line) {
+                                        try {
                                             String[] splitSCCFields = extractFieldsFrom(SETCURRENTKEY, navObject, lineSCC);
                                             if(Arrays.asList(splitSCCFields).containsAll(key.getFields())){
                                                 return true;
                                             }
+                                        }catch (IndexOutOfBoundsException e) {
+                                            System.out.println("Error: " + e.getLocalizedMessage());
+                                            System.out.println(this.getClass().toString() +  ": searchUsesInVarList.extractFieldsFrom(SETCURRENTKEY)");
+                                            System.out.println(((String) (navObject.getBody().lines().toArray())[lineSCC - 2]).stripLeading());
+                                            System.out.println(((String) (navObject.getBody().lines().toArray())[lineSCC - 1]).stripLeading());
+                                            System.out.println(((String) (navObject.getBody().lines().toArray())[lineSCC - 0]).stripLeading());
+                                            System.out.println(((String) (navObject.getBody().lines().toArray())[lineSCC + 1]).stripLeading());
                                         }
                                     }
                                 }
                             }
-                        }catch (IndexOutOfBoundsException e) {
-                            System.out.println("Error: " + e.getLocalizedMessage());
-                            System.out.println(this.getClass().toString() +  ": searchUsesInVarList");
                         }
+
                     }
                 }
             }
@@ -133,6 +181,9 @@ public class SearchSiftUsage implements SearchProcessor {
 
     private String[] extractFieldsFrom(String methodName, NavObject navObject, int line) {
         String calcLine = ((String) (navObject.getBody().lines().toArray())[line - 1]).stripLeading();
+        if(calcLine.isBlank()) {
+            calcLine = ((String) (navObject.getBody().lines().toArray())[++line]).stripLeading();
+        }
         String calcFields = calcLine.substring(calcLine.indexOf(methodName) + methodName.length()).stripLeading();
         int pos = calcFields.indexOf(")");
         while (pos == -1) {

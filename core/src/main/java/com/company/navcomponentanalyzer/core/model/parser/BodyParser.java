@@ -255,6 +255,7 @@ public class BodyParser {
             Index index = new Index(keyBody);
             index.setLineNo(lineNo);
             index.setTableNo(navObject.getId());
+            index.setTableName(navObject.getName());
             ((Table) navObject).addKey(index);
             keyBody.setLength(0);
         }

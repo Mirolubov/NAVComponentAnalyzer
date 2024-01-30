@@ -14,7 +14,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class FileLoader {
     private final MainFrame mainFrame;
-    private NavObjects navObjects;
+    private final NavObjects navObjects;
     private String command;
     private final int CAPACITY = 10;
     private final int THREADS = 2;

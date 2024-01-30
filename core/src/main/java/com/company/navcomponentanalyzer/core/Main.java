@@ -11,6 +11,7 @@ import com.company.navcomponentanalyzer.core.model.search.SearchProcessor;
 import com.company.navcomponentanalyzer.core.model.search.PrintResult;
 import com.company.navcomponentanalyzer.core.view.MainFrame;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.module.Configuration;
@@ -19,6 +20,7 @@ import java.lang.module.ModuleDescriptor;
 import java.lang.module.ModuleReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +43,9 @@ public class Main{
             folder = argumentParser.extractNextFolder();
             files = argumentParser.extractNextFiles();
             String charsetName = argumentParser.extractCharsetName();
-            appProperties.setCharsetName(charsetName);
+            if (!charsetName.isEmpty()) {
+                appProperties.setCharsetName(charsetName);
+            }
         }
         System.out.println("Charset: " + appProperties.getCharsetName());
 
@@ -54,6 +58,9 @@ public class Main{
 
         if(!consoleMode) {
             mainFrame = new MainFrame(navObjects, searchProcessors);
+        }
+        if(!folder.isBlank() && (files == null || files.size() == 0)) {
+            files = listFilesInFolder(folder);
         }
         if (files != null) {
             for (String file : files) {
@@ -98,6 +105,7 @@ public class Main{
 
         // Найдём все реализации сервиса IService в слое плагинов и в слое Boot
         List<SearchProcessor> searchProcessors = SearchProcessor.getSearchProcessors(layer);
+        System.out.println("Loaded searchProcessors: " + searchProcessors.size());
         return searchProcessors;
     }
 
@@ -121,4 +129,27 @@ public class Main{
             }
         }
     }
+
+    public static List<String> listFilesInFolder(String folderPath) {
+        List<String> fileNames = new ArrayList<>();
+        File folder = new File(folderPath);
+
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().toLowerCase().endsWith(".txt")) {
+                        fileNames.add(file.getName());
+                    }
+                }
+            } else {
+                System.out.printf ("Folder: %s is empty or does not exist.\r\n", folderPath);
+            }
+        } else {
+            System.out.printf("Specified path: %s is not a directory or does not exist.\r\n", folderPath);
+        }
+
+        return fileNames;
+    }
+
 }
